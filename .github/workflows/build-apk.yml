@@ -3,7 +3,7 @@ name: Buildozer Android
 on:
   push:
     branches:
-      - main # Or master
+      - main # O master
 
 jobs:
   build:
@@ -29,12 +29,14 @@ jobs:
 
       - name: Install Android SDK tools
         run: |
-          cd /home/runner
-          mkdir android-sdk
-          wget https://dl.google.com/android/repository/commandlinetools-linux-8597394_latest.zip
-          unzip commandlinetools-linux-8597394_latest.zip -d android-sdk
-          rm commandlinetools-linux-8597394_latest.zip
-          export PATH="$PATH:/home/runner/android-sdk/cmdline-tools/latest/bin"
+          mkdir -p $HOME/Android/sdk
+          cd $HOME/Android/sdk
+          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip commandlinetools-linux-11076708_latest.zip
+          
+          export PATH="$HOME/Android/sdk/cmdline-tools/latest/bin:$PATH"
+          
+          yes | sdkmanager --licenses > /dev/null
           sdkmanager "build-tools;33.0.0" "platforms;android-33" "platform-tools"
 
       - name: Build Android APK
