@@ -27,8 +27,11 @@ jobs:
           pip install cython
           pip install kivy matplotlib
 
+      
       - name: Build Android APK
-        run: buildozer android debug
+        run: |
+            buildozer android debug
+            /home/runner/.buildozer/android/platform/android-sdk/cmdline-tools/latest/bin/sdkmanager "build-tools;33.0.0" "platform-tools" "platforms;android-33" --sdk_root=/home/runner/.buildozer/android/platform/android-sdk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
