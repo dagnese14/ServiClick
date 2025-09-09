@@ -1,4 +1,4 @@
-name: Buildozer Android (Manual SDK/NDK)
+name: Buildozer Android
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: '3.10'
 
-      - name: Install Dependencies
+      - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip libtool zlib1g-dev libncurses5-dev
@@ -28,21 +28,30 @@ jobs:
 
       - name: Install Android SDK and NDK
         run: |
-          export ANDROID_HOME=$HOME/Android/sdk
-          mkdir -p $ANDROID_HOME/cmdline-tools
-          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-          unzip -q commandlinetools-linux-11076708_latest.zip -d $ANDROID_HOME/cmdline-tools/latest
-          rm commandlinetools-linux-11076708_latest.zip
+          # Use a dedicated temp directory for a cleaner process
+          SDK_DIR=$HOME/android-sdk-linux
+          mkdir -p $SDK_DIR
+          
+          # Download and unzip to a temp location
+          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline.zip
+          unzip -q cmdline.zip -d $SDK_DIR
+          rm cmdline.zip
+          
+          # Move the actual tools to the correct "latest" sub-directory
+          mkdir -p $SDK_DIR/cmdline-tools/latest
+          mv $SDK_DIR/cmdline-tools/* $SDK_DIR/cmdline-tools/latest/
 
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses --sdk_root=$ANDROID_HOME > /dev/null
+          # Export the correct path to the SDK tools for the session
+          export PATH="$SDK_DIR/cmdline-tools/latest/bin:$PATH"
           
-          $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "build-tools;33.0.0" "platforms;android-33" "platform-tools" --sdk_root=$ANDROID_HOME
+          # Accept licenses and install packages
+          yes | sdkmanager --licenses > /dev/null
+          sdkmanager "build-tools;33.0.0" "platforms;android-33" "platform-tools"
           
-          export ANDROID_NDK_ROOT=$HOME/.buildozer/android/platform/android-ndk-r25b
-          
-          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_ENV
-          echo "ANDROID_NDK_ROOT=$ANDROID_NDK_ROOT" >> $GITHUB_ENV
-          
+          # Set environment variables for Buildozer
+          echo "ANDROID_HOME=$SDK_DIR" >> $GITHUB_ENV
+          echo "ANDROID_NDK_ROOT=$HOME/.buildozer/android/platform/android-ndk-r25b" >> $GITHUB_ENV
+
       - name: Build Android APK
         run: |
           buildozer android debug
