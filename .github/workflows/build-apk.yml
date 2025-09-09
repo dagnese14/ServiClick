@@ -30,8 +30,8 @@ jobs:
         run: |
           mkdir -p $HOME/android-sdk-linux
           cd $HOME/android-sdk-linux
-          wget https://dl.google.com/android/repository/commandlinetools-linux-8597394_latest.zip
-          unzip commandlinetools-linux-8597394_latest.zip
+          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip commandlinetools-linux-11076708_latest.zip
           
           yes | $HOME/android-sdk-linux/cmdline-tools/bin/sdkmanager --licenses > /dev/null
           
@@ -40,13 +40,12 @@ jobs:
           export ANDROID_HOME=$HOME/android-sdk-linux
           export ANDROID_NDK_ROOT=$HOME/.buildozer/android/platform/android-ndk-r25b
           
-          # This will download the NDK
           buildozer android debug --install-ndk
-
+          
       - name: Build Android APK
         run: |
           buildozer android debug
-
+      
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
