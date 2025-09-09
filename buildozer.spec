@@ -3,6 +3,7 @@
 title = ServiClick
 package.name = com.servi.click
 package.domain = org.test
+version = 1.0 # ¡Añade esta línea!
 source.dir = .
 source.include_exts = py,png,jpg,kv,json
 
