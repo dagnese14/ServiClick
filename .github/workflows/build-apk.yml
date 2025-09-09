@@ -31,15 +31,16 @@ jobs:
           # Use a dedicated temp directory for a cleaner process
           SDK_DIR=$HOME/android-sdk-linux
           mkdir -p $SDK_DIR
+          cd $SDK_DIR
           
           # Download and unzip to a temp location
           wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline.zip
-          unzip -q cmdline.zip -d $SDK_DIR
+          unzip -q cmdline.zip
           rm cmdline.zip
           
-          # Move the actual tools to the correct "latest" sub-directory
-          mkdir -p $SDK_DIR/cmdline-tools/latest
-          mv $SDK_DIR/cmdline-tools/* $SDK_DIR/cmdline-tools/latest/
+          # Create the final directory structure and move the tools
+          mkdir -p cmdline-tools/latest
+          mv cmdline-tools/* cmdline-tools/latest/
 
           # Export the correct path to the SDK tools for the session
           export PATH="$SDK_DIR/cmdline-tools/latest/bin:$PATH"
