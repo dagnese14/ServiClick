@@ -3,45 +3,31 @@ name: Buildozer Android
 on:
   push:
     branches:
-      - main # O master
+      - main # O master, si esa es tu rama principal
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up Python 3.10
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip libtool zlib1g-dev libncurses5-dev
           pip install --upgrade pip
-          pip install buildozer
-          pip install kivy
-          pip install matplotlib
-
-      - name: Install Android SDK tools
-        run: |
-          mkdir -p $HOME/Android/sdk
-          cd $HOME/Android/sdk
-          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
-          unzip commandlinetools-linux-11076708_latest.zip
-          
-          export PATH="$HOME/Android/sdk/cmdline-tools/latest/bin:$PATH"
-          
-          yes | sdkmanager --licenses > /dev/null
-          sdkmanager "build-tools;33.0.0" "platforms;android-33" "platform-tools"
+          pip install buildozer cython
+          pip install kivy matplotlib
 
       - name: Build Android APK
-        run: |
-          buildozer android debug
+        run: buildozer android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
