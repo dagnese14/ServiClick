@@ -1,27 +1,36 @@
-[app]
+name: Buildozer Android
 
-title = ServiClick
-package.name = com.servi.click
-package.domain = org.test
-version = 1.0
-source.dir = .
-source.include_exts = py,png,jpg,kv,json
- 
-requirements = python3,kivy,sqlite3,matplotlib,certifi,requests
- 
-orientation = portrait
- 
-android.api = 33
-android.minapi = 21
-android.ndk = 25b
-android.archs = arm64-v8a, armeabi-v7a
+on:
+  push:
+    branches:
+      - main # O master, si esa es tu rama principal
 
-# Android permissions
-android.permissions = INTERNET,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
+jobs:
+  build:
+    runs-on: ubuntu-latest
 
-# Presplash
-# android.presplash_color = #000000
-# android.presplash_image = %(source)s/data/presplash.png
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-# Icon
-# icon.filename = %(source)s/data/icon.png
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip libtool zlib1g-dev libncurses5-dev
+          pip install --upgrade pip
+          pip install buildozer cython
+          pip install kivy matplotlib
+
+      - name: Build Android APK
+        run: buildozer android debug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ServiClick-APK
+          path: bin/*.apk
