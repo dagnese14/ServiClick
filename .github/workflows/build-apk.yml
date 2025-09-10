@@ -1,64 +1,27 @@
-name: Buildozer Android
+[app]
 
-on:
-  push:
-    branches:
-      - main # O master
+title = ServiClick
+package.name = com.servi.click
+package.domain = org.test
+version = 1.0
+source.dir = .
+source.include_exts = py,png,jpg,kv,json
+ 
+requirements = python3,kivy,sqlite3,matplotlib,certifi,requests
+ 
+orientation = portrait
+ 
+android.api = 33
+android.minapi = 21
+android.ndk = 25b
+android.archs = arm64-v8a, armeabi-v7a
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+# Android permissions
+android.permissions = INTERNET,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+# Presplash
+# android.presplash_color = #000000
+# android.presplash_image = %(source)s/data/presplash.png
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
-
-      - name: Install dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y git zip unzip openjdk-17-jdk python3-pip libtool zlib1g-dev libncurses5-dev
-          pip install --upgrade pip
-          pip install buildozer cython
-          pip install kivy matplotlib
-
-      - name: Install Android SDK and NDK
-        run: |
-          SDK_DIR=$HOME/android-sdk-linux
-          mkdir -p $SDK_DIR
-          cd $SDK_DIR
-          
-          # Download and unzip the tools
-          wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline.zip
-          unzip -q cmdline.zip
-          rm cmdline.zip
-          
-          # Correctly move files to the 'latest' folder
-          mv cmdline-tools latest
-          mkdir -p cmdline-tools/latest
-          mv latest/* cmdline-tools/latest/
-          rmdir latest
-
-          # Set environment variables for the session
-          export PATH="$SDK_DIR/cmdline-tools/latest/bin:$PATH"
-          
-          yes | sdkmanager --licenses > /dev/null
-          sdkmanager "build-tools;33.0.0" "platforms;android-33" "platform-tools"
-          
-          # Set environment variables for Buildozer
-          echo "ANDROID_HOME=$SDK_DIR" >> $GITHUB_ENV
-          echo "ANDROID_NDK_ROOT=$HOME/.buildozer/android/platform/android-ndk-r25b" >> $GITHUB_ENV
-
-      - name: Build Android APK
-        run: |
-          buildozer android debug
-      
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: ServiClick-APK
-          path: bin/*.apk
+# Icon
+# icon.filename = %(source)s/data/icon.png
