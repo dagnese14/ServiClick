@@ -28,24 +28,24 @@ jobs:
 
       - name: Install Android SDK and NDK
         run: |
-          # Use a dedicated temp directory for a cleaner process
           SDK_DIR=$HOME/android-sdk-linux
           mkdir -p $SDK_DIR
           cd $SDK_DIR
           
-          # Download and unzip to a temp location
+          # Download and unzip the tools
           wget https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O cmdline.zip
           unzip -q cmdline.zip
           rm cmdline.zip
           
-          # Create the final directory structure and move the tools
+          # Correctly move files to the 'latest' folder
+          mv cmdline-tools latest
           mkdir -p cmdline-tools/latest
-          mv cmdline-tools/* cmdline-tools/latest/
+          mv latest/* cmdline-tools/latest/
+          rmdir latest
 
-          # Export the correct path to the SDK tools for the session
+          # Set environment variables for the session
           export PATH="$SDK_DIR/cmdline-tools/latest/bin:$PATH"
           
-          # Accept licenses and install packages
           yes | sdkmanager --licenses > /dev/null
           sdkmanager "build-tools;33.0.0" "platforms;android-33" "platform-tools"
           
