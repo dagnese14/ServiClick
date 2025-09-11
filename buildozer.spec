@@ -6,14 +6,14 @@ package.domain = org.test
 version = 1.0
 source.dir = .
 source.include_exts = py,png,jpg,kv,json
- 
+
 requirements = python3,kivy,sqlite3,matplotlib,certifi,requests
- 
+
 orientation = portrait
- 
 android.api = 33
-android.minapi = 21
-android.ndk = 25b
+android.minapi = 24
+android.ndk = 26d
+android.ndk_path = /mnt/c/android/android-ndk-r26d
 android.archs = arm64-v8a, armeabi-v7a
 
 # Android permissions
