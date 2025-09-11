@@ -13,7 +13,6 @@ orientation = portrait
 android.api = 33
 android.minapi = 24
 android.ndk = 26d
-android.ndk_path = /mnt/c/android/android-ndk-r26d
 android.archs = arm64-v8a, armeabi-v7a
 
 # Android permissions
